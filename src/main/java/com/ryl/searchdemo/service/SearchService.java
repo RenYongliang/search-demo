@@ -1,5 +1,9 @@
 package com.ryl.searchdemo.service;
 
+import com.ryl.searchdemo.model.Item;
+import org.elasticsearch.index.query.QueryBuilder;
+
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -15,4 +19,6 @@ public interface SearchService {
      * @return
      */
     List<String> suggest(String prefix);
+
+    List<Item> search(String index, QueryBuilder queryBuilder) throws IOException;
 }

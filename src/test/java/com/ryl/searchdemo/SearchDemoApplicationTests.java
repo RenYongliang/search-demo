@@ -193,6 +193,54 @@ class SearchDemoApplicationTests {
         restHighLevelClientService.createIndex("my_token",settings ,mappings);
     }
 
+    public void bulkTestIndex() {
+        String documents = "" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"短袖女\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"短袖t恤女\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"短袖t恤男\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"短袖男\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"短袖2020年新款女\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"短袖上衣女\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"短袖男潮牌 潮流\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"短袖连衣裙\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"短袖女ins潮\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"短袖衬衫女\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"单鞋女平底\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"单鞋2020春款\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"单鞋女粗跟\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"单鞋女仙女风\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"单鞋女夏百搭\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"d型挂扣\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"d型方向盘\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"dxracer电竞椅\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"点心零食\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"点心包装盒\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"点心糕点 散装 老式\"}\n" +
+                "{\"index\":{}}\n" +
+                "{\"title\":\"大型折叠自行车\"}";
+    }
+
     @Test
     public void importAll() throws IOException {
         restHighLevelClientService.importAll("idx_item",true,itemService.getItemJson());

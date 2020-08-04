@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.util.Assert;
 
 /**
  * @author: ryl
@@ -22,7 +23,7 @@ import org.springframework.context.annotation.PropertySource;
 public class RestHighLevelClientConfig {
 
     @Value("${es.host}")
-    private String host;
+    private String hosts;
     @Value("${es.port}")
     private int port;
     @Value("${es.scheme}")
@@ -40,10 +41,8 @@ public class RestHighLevelClientConfig {
 
     @Bean
     public RestClientBuilder restClientBuilder() {
-        RestClientBuilder restClientBuilder = RestClient.builder(
-                new HttpHost(host, port, scheme)
-        );
 
+        RestClientBuilder restClientBuilder = RestClient.builder(getHttpHostArr());
         Header[] defaultHeaders = new Header[]{
                 new BasicHeader("Accept", "*/*"),
                 new BasicHeader("Charset", charSet),
@@ -65,5 +64,27 @@ public class RestHighLevelClientConfig {
     @Bean
     public RestHighLevelClient restHighLevelClient(RestClientBuilder restClientBuilder) {
         return new RestHighLevelClient(restClientBuilder);
+    }
+
+
+
+
+
+
+    /**
+     * hosts字符串转成HttpHost数组
+     * @return
+     */
+    private HttpHost[] getHttpHostArr() {
+        Assert.hasLength(hosts,"host must not be null or empty!");
+
+        String[] hostArr = hosts.split(",");
+        HttpHost[] httpHostArr = new HttpHost[hostArr.length];
+        for (int i=0; i < hostArr.length; i++) {
+            //分割ip和端口
+            String[] arr = hostArr[i].split(":");
+            httpHostArr[i] = new HttpHost(arr[0],Integer.parseInt(arr[1]),"http");
+        }
+        return httpHostArr;
     }
 }

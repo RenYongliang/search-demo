@@ -77,6 +77,12 @@
             <version>portable-1.7.7</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.ryl</groupId>
+            <artifactId>framework-base</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
 
 
 

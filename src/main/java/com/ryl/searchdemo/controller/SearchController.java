@@ -1,12 +1,17 @@
 package com.ryl.searchdemo.controller;
 
+import com.ryl.framework.base.ResultModel;
 import com.ryl.searchdemo.model.Item;
 import com.ryl.searchdemo.service.SearchService;
+import com.ryl.searchdemo.util.bulk.BulkInsert;
+import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,30 +33,32 @@ public class SearchController {
     }
 
     @RequestMapping("/search")
-    public List<Item> search() {
-        List<Item> itemList = new ArrayList<>();
-////        try {
-//        SearchRequest request = new SearchRequest("idx_item");
-//        SearchSourceBuilder builder = new SearchSourceBuilder();
-//        QueryBuilder boolQueryBuilder = functionScore1();
-//        builder.query(boolQueryBuilder);
-//        request.source(builder);
-//
-//        System.out.println(String.format("[=======================>搜索语句为:%s\r\n]", boolQueryBuilder.toString()));
-//
-////            SearchResponse search = restHighLevelClient.search(request, RequestOptions.DEFAULT);
-////            SearchHit[] hits = search.getHits().getHits();
-////
-////            System.out.println("记录数:" + hits.length);
-////
-////            for (SearchHit hit : hits) {
-////                Item item = JSON.parseObject(hit.getSourceAsString(),Item.class);
-////                itemList.add(item);
-////            }
-////            return itemList;
-////        } catch(IOException e) {
-////            e.printStackTrace();
-////        }
-        return itemList;
+    public ResultModel<List<Item>> search() throws IOException {
+        List<Item> itemList = searchService.search("idx_item",new MatchAllQueryBuilder());
+        return ResultModel.success(itemList);
+    }
+
+    @RequestMapping("/bulkInsert")
+    public ResultModel<Item> bulkInsert() throws IOException {
+        List<Item> itemList = searchService.search("idx_item",new MatchAllQueryBuilder());
+        BulkInsert<Item> bulkInsert = new BulkInsert<>();
+        BulkResponse resp = bulkInsert.setSources(itemList).setIndex("my_temp_index").bulk();
+        return ResultModel.success(resp.status());
+    }
+
+    public static void main(String[] args) {
+        List<String> nameList1 = new ArrayList<>();
+        nameList1.add("zhangsan");
+        nameList1.add("lisi");
+        nameList1.add("wangwu");
+
+        List<String> nameList2 = new ArrayList<>();
+        nameList2.add("lisi");
+        nameList2.add("xiaoxiong");
+        nameList2.add("xiaobo");
+
+        boolean b = nameList2.removeAll(nameList1);
+        System.out.println(nameList2);
+
     }
 }
