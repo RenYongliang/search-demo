@@ -3,14 +3,15 @@ package com.ryl.searchdemo.config;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.message.BasicHeader;
+import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.client.Node;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.util.Assert;
 
 /**
@@ -19,10 +20,10 @@ import org.springframework.util.Assert;
  * @date: 2020-05-14 13:40:50
  */
 @Configuration
-@PropertySource("classpath:es-config.properties")
+@ConfigurationProperties(prefix = "es")
 public class RestHighLevelClientConfig {
 
-    @Value("${es.host}")
+    @Value("${es.hosts}")
     private String hosts;
     @Value("${es.port}")
     private int port;
@@ -64,6 +65,11 @@ public class RestHighLevelClientConfig {
     @Bean
     public RestHighLevelClient restHighLevelClient(RestClientBuilder restClientBuilder) {
         return new RestHighLevelClient(restClientBuilder);
+    }
+
+
+    BulkProcessor builderBulkProcessor() {
+        return null;
     }
 
 

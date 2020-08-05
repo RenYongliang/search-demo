@@ -114,7 +114,7 @@ public class SearchServiceImpl implements SearchService {
         builder.query(queryBuilder);
         request.source(builder);
 
-        log.info(String.format("=======================>搜索语句为:\r\n{}", queryBuilder.toString()));
+        log.info("=======================>搜索语句为:\r\n{}", queryBuilder.toString());
         SearchResponse search = restHighLevelClient.search(request, RequestOptions.DEFAULT);
         SearchHit[] hits = search.getHits().getHits();
 

@@ -30,7 +30,7 @@ public class ItemService {
         BufferedReader br = null;
 
         try{
-            in = this.getClass().getClassLoader().getResourceAsStream("items.json");
+            in = this.getClass().getClassLoader().getResourceAsStream("items1.json");
             inr = new InputStreamReader(in);
             br = new BufferedReader(inr);
 

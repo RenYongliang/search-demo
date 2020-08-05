@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.support.WriteRequest;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -31,6 +32,10 @@ public class BulkInsert<T> extends BulkBase {
      * source列表
      */
     private List<T> sources;
+
+    public BulkInsert(RestHighLevelClient client) {
+        super(client);
+    }
 
     @Override
     public void buildBulkRequest() {

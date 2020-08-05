@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import java.util.List;
 
@@ -17,6 +18,10 @@ import java.util.List;
 public class BulkDelete extends BulkBase {
 
     private List<String> ids;
+
+    public BulkDelete(RestHighLevelClient client) {
+        super(client);
+    }
 
     @Override
     public void buildBulkRequest() {

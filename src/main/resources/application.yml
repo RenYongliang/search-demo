@@ -1,2 +1,20 @@
 server:
   port: 8001
+es:
+  hosts: 120.76.128.254:9200
+  port: 9200
+  token: es-token
+  charset: UTF-8
+  scheme: http
+  client:
+    connectTimeOut: 5000
+    socketTimeout: 15000
+swagger:
+  group-name: 搜索中心
+  base-package: com.ryl.searchdemo.controller
+  title: 搜索中心 API
+  description: luoluodafang
+  version: 1.0.0
+  contact-name: yongliang.ren
+  contact-url:
+  contact-email: 1017632646@qq.com

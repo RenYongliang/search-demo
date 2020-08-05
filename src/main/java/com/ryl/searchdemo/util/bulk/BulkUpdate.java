@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -25,6 +26,10 @@ public class BulkUpdate<T> extends BulkBase {
      * 指定docId的map,key:docId,value:source
      */
     private Map<String, T> docIdSourceMap;
+
+    public BulkUpdate(RestHighLevelClient client) {
+        super(client);
+    }
 
     @Override
     public void buildBulkRequest() {
