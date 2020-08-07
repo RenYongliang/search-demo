@@ -1,0 +1,24 @@
+server:
+  compression:
+    enabled: true
+spring:
+  application:
+    name: search-center
+  profiles:
+    active: local
+
+---
+spring:
+  profiles: local
+  cloud:
+    config:
+      name: springcloud-provider,local    #读取指定application的配置
+      profile: dev   #读取指定profile的配置
+      label: master  #读取指定label的配置
+      discovery:
+        enabled: true
+        service-id: CONFIGSERVICE
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:123456@120.76.128.254:9999/eureka/
