@@ -1,13 +1,14 @@
 package com.ryl.searchdemo.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.message.BasicHeader;
+import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
-import org.elasticsearch.client.Node;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.client.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,7 @@ import org.springframework.util.Assert;
  */
 @Configuration
 @ConfigurationProperties(prefix = "es")
+@Slf4j
 public class RestHighLevelClientConfig {
 
     @Value("${es.hosts}")
@@ -68,8 +70,53 @@ public class RestHighLevelClientConfig {
     }
 
 
-    BulkProcessor builderBulkProcessor() {
-        return null;
+    @Bean
+    BulkProcessor builderBulkProcessor(RestHighLevelClient restHighLevelClient) {
+        BulkProcessor.Listener listener = new BulkProcessor.Listener() {
+            @Override
+            public void beforeBulk(long l, BulkRequest bulkRequest) {
+                //在每次执行BulkRequest之前调用，该方法允许知道要在BulkRequest中执行的操作的数量
+                log.debug("Executing bulk [{}] with {} requests", l, bulkRequest.numberOfActions());
+            }
+
+            @Override
+            public void afterBulk(long l, BulkRequest bulkRequest, BulkResponse bulkResponse) {
+                //在每次执行BulkRequest之后调用，此方法允许知道BulkResponse是否包含错误
+                if (bulkResponse.hasFailures()) {
+                    log.warn("Bulk [{}] executed with failures", l);
+                    for (BulkItemResponse bulkItemResponse : bulkResponse.getItems()) {
+                        if (bulkItemResponse.isFailed()) {
+                            log.warn("bulkItemResponse.getFailure():{}", bulkItemResponse.getFailure().getMessage());
+                        }
+                    }
+                } else {
+                    log.debug("Bulk [{}] completed in {} milliseconds", l, bulkResponse.getTook().getMillis());
+                }
+            }
+
+            @Override
+            public void afterBulk(long l, BulkRequest bulkRequest, Throwable throwable) {
+                //当BulkRequest失败时调用此方法
+                log.error("Failed to execute bulk", throwable);
+            }
+        };
+
+        BulkProcessor.Builder builder = BulkProcessor.builder(
+                (request, bulkListener) ->
+                        restHighLevelClient.bulkAsync(request, RequestOptions.DEFAULT, bulkListener),
+                listener);
+
+        //根据当前添加的操作数设置刷新新批量请求的时间(默认为1000，使用-1禁用它)
+        //builder.setBulkActions(this.bulkActions);
+        //根据当前添加的操作大小设置刷新新批量请求的时间(默认值为5MB，使用-1禁用它)
+        //builder.setBulkSize(this.bulkSize);
+        //设置允许执行的并发请求数(默认为1，使用0只允许执行单个请求)
+        //builder.setConcurrentRequests(this.concurrentRequests);
+        //设置刷新间隔，如果间隔过去，刷新所有BulkRequest挂起(默认为NotSet)
+        //builder.setFlushInterval(this.flushInterval);
+        //设置一个常量后退策略，最初等待1秒，最多重试3次。有关更多选项，请参见BackoffPolicy.noBackoff()、BackoffPolicy.constantBackoff()和BackoffPolicy.指数退避()。
+        //builder.setBackoffPolicy(BackoffPolicy.constantBackoff(TimeValue.timeValueSeconds(1L), 3));
+        return builder.build();
     }
 
 

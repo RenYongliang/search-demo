@@ -1,5 +1,14 @@
 server:
   port: 8001
+spring:
+  application:
+    name: search-demo
+eureka:
+  client:
+    healthcheck:
+      enabled: false
+    service-url:
+      defaultZone: http://admin:123456@120.76.128.254:9999/eureka/
 es:
   hosts: 120.76.128.254:9200
   port: 9200
